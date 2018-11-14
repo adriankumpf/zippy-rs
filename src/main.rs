@@ -5,19 +5,22 @@ mod err;
 use meval;
 use rayon::prelude::*;
 use reqwest;
+use structopt::StructOpt;
 
 use std::fs::File;
 
 use self::err::{Result, ZippydError};
 
-fn main() -> Result {
-    std::env::args()
-        .collect::<Vec<String>>()
-        .par_iter()
-        .try_for_each(|url| {
-            let url = get_file_url(&url)?;
-            download_file(&url)
-        })
+#[derive(StructOpt, Debug)]
+#[structopt()]
+struct Opt {
+    /// Number of concurrent downloads
+    #[structopt(short = "c")]
+    concurrency: Option<usize>,
+
+    /// Zippyshare URL(s)
+    #[structopt(name = "URLs")]
+    urls: Vec<String>,
 }
 
 fn get_file_url(url: &str) -> Result<String> {
@@ -60,4 +63,19 @@ fn download_file(url: &str) -> Result {
     std::io::copy(&mut res, &mut file)?;
 
     Ok(())
+}
+
+fn main() -> Result {
+    let opt = Opt::from_args();
+
+    if let Some(c) = opt.concurrency {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(c)
+            .build_global()?;
+    }
+
+    opt.urls.par_iter().try_for_each(|url| {
+        let url = get_file_url(&url)?;
+        download_file(&url)
+    })
 }

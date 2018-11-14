@@ -11,6 +11,7 @@ pub enum ZippydError {
     Reqwest(reqwest::Error),
     Io(io::Error),
     InvalidUrl(String),
+    ThreadPoolBuildError(rayon::ThreadPoolBuildError),
     NoneError,
 }
 
@@ -23,6 +24,12 @@ impl From<std::option::NoneError> for ZippydError {
 impl From<reqwest::Error> for ZippydError {
     fn from(err: reqwest::Error) -> ZippydError {
         ZippydError::Reqwest(err)
+    }
+}
+
+impl From<rayon::ThreadPoolBuildError> for ZippydError {
+    fn from(err: rayon::ThreadPoolBuildError) -> ZippydError {
+        ZippydError::ThreadPoolBuildError(err)
     }
 }
 

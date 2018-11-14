@@ -1,10 +1,11 @@
 [package]
 name = "zippyd"
 version = "0.1.0"
-authors = ["Adrian Kumpf"]
+authors = ["Adrian Kumpf <adrian.kumpf@posteo.de>"]
 edition = '2018'
 
 [dependencies]
 reqwest = "0.9.5"
 meval = "0.2.0"
 rayon = "1.0.3"
+structopt = "0.2.13"
