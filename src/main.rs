@@ -12,10 +12,10 @@ use std::fs::File;
 use self::err::{Result, ZippydError};
 
 #[derive(StructOpt, Debug)]
-#[structopt()]
+#[structopt(about = "A ZippyShare CLI downloader")]
 struct Opt {
-    /// Number of concurrent downloads
-    #[structopt(short = "c")]
+    /// Number of concurrent downloads (Default: Number of logical CPUs)
+    #[structopt(short)]
     concurrency: Option<usize>,
 
     /// Zippyshare URL(s)
